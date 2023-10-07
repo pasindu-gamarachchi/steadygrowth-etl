@@ -2,9 +2,5 @@
 services:
   etl-app:
     build: .
-    environment:
-      - DB_NAME: ${DB_NAME}
-      - DB_HOST: ${DB_HOST}
-      - DB_USER: ${DB_USER}
-      - DB_PASS: ${DB_PASS}
-      - DB_PORT: ${DB_PORT}
+    volumes:
+      - ./logs:/etl/logs
