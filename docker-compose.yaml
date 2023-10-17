@@ -4,3 +4,4 @@ services:
     build: .
     volumes:
       - ./logs:/etl/logs
+      - ./data:/etl/data
