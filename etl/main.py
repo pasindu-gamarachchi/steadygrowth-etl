@@ -1,21 +1,14 @@
-import logging
-from datetime import  datetime
-import time
+import json
+import os
 
-etl_Logger = logging.getLogger(__name__)
-steamHandler = logging.StreamHandler()
-timestamp = datetime.now().strftime("%a_%d%-m%-Y_%H%M")
-fileHandler = logging.FileHandler(f"logs/{timestamp}.log")
-streamFormat = logging.Formatter('%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s')
-
-steamHandler.setFormatter(streamFormat)
-fileHandler.setFormatter(streamFormat)
-steamHandler.setLevel(logging.INFO)
-etl_Logger.addHandler(steamHandler)
-etl_Logger.addHandler(fileHandler)
-
-etl_Logger.setLevel(logging.DEBUG)
-
+from Downloader.downloader import Downloader
+from Etl_logger.etl_logger import etl_Logger
 
 if __name__ == "__main__":
     etl_Logger.info("Running")
+    with open(os.getenv("CONFIG_PATH"), "r") as file:
+        configs = json.load(file)
+
+    stocks = configs["symbols"]
+    dwnloader = Downloader(stocks, '2mo')
+    dwnloader.download_files()
