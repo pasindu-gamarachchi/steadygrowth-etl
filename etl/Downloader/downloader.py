@@ -15,7 +15,7 @@ class Downloader:
         timestamp = datetime.now().strftime("%a_%d%-m%-Y_%H%M")
         self.__make_direc(f"data/{timestamp}/{symb}")
         df = yf.Ticker(symb.upper())
-        hist = df.history(period="7d")
+        hist = df.history(period=per)
         etl_Logger.info(f"----------------------      {symb}   ------------------------------")
         etl_Logger.info(f"{hist.head()}")
         etl_Logger.info("-------------------------------------------------------------------")
@@ -28,6 +28,6 @@ class Downloader:
     def download_files(self):
         for symb in self.__stocks_to_dwnload:
             self.download_symb(symb, self.__per)
-            break
+            # break
 
 

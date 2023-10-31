@@ -5,3 +5,5 @@ services:
     volumes:
       - ./logs:/etl/logs
       - ./data:/etl/data
+    environment:
+      - CONFIG_PATH=etl/config.json
