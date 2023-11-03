@@ -7,3 +7,9 @@ services:
       - ./data:/etl/data
     environment:
       - CONFIG_PATH=etl/config.json
+      - DB_USER=sg_admin
+      - DB_PASS=SG_p@ssword1
+      - DB_NAME=prod_steadygrowth_bckup
+      - DB_HOST=172.17.0.1
+      - DB_PORT=3306
+    network_mode: "host"
