@@ -76,7 +76,7 @@ class DataWriter:
         for symb in self.__symbs:
             etl_Logger.info(f"-------------   Working on symbol : {symb} -------------------------")
             df_db = self.__read_existing_data(symb)
-            if not df_db:
+            if not df_db.shape[0]:
                 etl_Logger.error(f"Existing data dataframe not returned for {symb}.")
             path = f"{self.__data_path}/{symb}"
             df_from_file = self.__read_from_csv(path)
