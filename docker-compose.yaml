@@ -6,4 +6,10 @@ services:
       - ./logs:/etl/logs
       - ./data:/etl/data
     environment:
-      - CONFIG_PATH=etl/config.json
+      - CONFIG_PATH=${CONFIG_PATH}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+    network_mode: "host"
