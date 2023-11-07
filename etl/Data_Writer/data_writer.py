@@ -42,6 +42,7 @@ class DataWriter:
     def __read_from_csv(self, path):
         path += '/data.csv'
         newdf = pd.read_csv(path)
+        newdf['Date'] = newdf['Date'].str.split(' ').str[0]
         newdf['Date'] = pd.to_datetime(newdf['Date']).dt.strftime('%Y-%m-%d')
         newdf = newdf[newdf['Date'] > self.__curr_date]
         etl_Logger.info(f"Read data from {path}, df shape {newdf.shape[0]}, {newdf.shape[1]}")

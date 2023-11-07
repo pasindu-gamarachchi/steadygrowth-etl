@@ -1,5 +1,5 @@
 {
   "symbols" : ["aapl", "amzn","bp", "googl",  "mdb", "msft", "nflx",  "shop",  "su",  "team", "tsla"],
-  "per" : "3d",
-  "fromDate": "2023-10-31"
+  "per" : "2mo",
+  "fromDate": "2023-09-15"
 }
