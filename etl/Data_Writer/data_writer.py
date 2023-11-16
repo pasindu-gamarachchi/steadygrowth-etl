@@ -29,7 +29,8 @@ class DataWriter:
         params = {"symb": table_name, "starting_date": self.__curr_date}
         try:
             sql_query = pd.read_sql_query(
-                f"SELECT * FROM {params['symb']} WHERE `Date` >= %(starting_date)s ORDER BY `Date` DESC;", self.__engine,
+                f"SELECT * FROM {params['symb']} WHERE `Date` >= %(starting_date)s ORDER BY `Date` DESC;",
+                self.__engine,
                 params=params)
             data_from_db = pd.DataFrame(sql_query)
             logging.info(f"Read data from {table_name}, df shape {data_from_db.shape[0]}, {data_from_db.shape[1]}")
@@ -42,10 +43,13 @@ class DataWriter:
     def __read_from_csv(self, path):
         path += '/data.csv'
         newdf = pd.read_csv(path)
+        etl_Logger.info(f"Read data from {path}, df shape {newdf.shape[0]}, {newdf.shape[1]}")
+
         newdf['Date'] = newdf['Date'].str.split(' ').str[0]
         newdf['Date'] = pd.to_datetime(newdf['Date']).dt.strftime('%Y-%m-%d')
-        newdf = newdf[newdf['Date'] > self.__curr_date]
-        etl_Logger.info(f"Read data from {path}, df shape {newdf.shape[0]}, {newdf.shape[1]}")
+        newdf = newdf[newdf['Date'] >= self.__curr_date]
+        etl_Logger.info(
+            f"Df shape afte comparing with date : {self.__curr_date}, df shape {newdf.shape[0]}, {newdf.shape[1]}")
         return newdf
 
     def __concat_and_prune_cols(self, df1, df2):
@@ -60,9 +64,10 @@ class DataWriter:
         return df
 
     def __write_to_db(self, df, symb):
-        df = df[df['Date'] != self.__curr_date]
+        etl_Logger.info(f"About to write data for {symb}, with shape {df.shape[0]}, {df.shape[1]}")
+        df = df[df['Date'] >= self.__curr_date]
         df.to_sql(symb, self.__engine, if_exists='append', index=False);
-        etl_Logger.info(f"Succesfully wrote data for {symb}.")
+        etl_Logger.info(f"Succesfully wrote data for {symb}, with shape {df.shape[0]}, {df.shape[1]}")
 
     def run(self):
         """
