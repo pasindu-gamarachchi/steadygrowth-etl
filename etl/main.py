@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 
 from Downloader.downloader import Downloader
@@ -10,8 +11,13 @@ from datetime import datetime
 
 if __name__ == "__main__":
     etl_Logger.info("-----------------  Running Pipeline  --------------------")
-    with open(os.getenv("CONFIG_PATH"), "r") as file:
-        configs = json.load(file)
+    try:
+        with open(os.getenv("CONFIG_PATH"), "r") as file:
+            configs = json.load(file)
+    except FileNotFoundError as err:
+        logging.warning(f"Failed to find config file in {os.listdir()}")
+        with open("/etl/config.json", "r") as file:
+            configs = json.load(file)
     stocks = configs["symbols"]
 
     isDailyUpdate = configs['isDailyUpdate']
