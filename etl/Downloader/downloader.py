@@ -15,8 +15,9 @@ class Downloader:
     def download_symb(self, symb, per):
         etl_Logger.info(f" -------  Downloading data, for {symb} for {per}. -----------------")
         timestamp = datetime.now().strftime("%a_%d%-m%-Y_%H%M")
-        self.__filepath = f"data/{timestamp}/"
-        self.__make_direc(f"{self.__filepath}{symb}")
+        if not self.__filepath:
+            self.__filepath = f"data/{timestamp}"
+        self.__make_direc(f"{self.__filepath}/{symb}")
         df = yf.Ticker(symb.upper())
         hist = df.history(period=per)
         etl_Logger.info(f"----------------------      {symb}   ------------------------------")

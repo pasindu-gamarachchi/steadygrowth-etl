@@ -1,16 +1,40 @@
 import json
+import logging
 import os
 
 from Downloader.downloader import Downloader
 from Etl_logger.etl_logger import etl_Logger
 from Data_Writer.data_writer import DataWriter
 
+from pytz import timezone
+from datetime import datetime
+
 if __name__ == "__main__":
     etl_Logger.info("-----------------  Running Pipeline  --------------------")
-    with open(os.getenv("CONFIG_PATH"), "r") as file:
-        configs = json.load(file)
+    try:
+        with open(os.getenv("CONFIG_PATH"), "r") as file:
+            configs = json.load(file)
+    except FileNotFoundError as err:
+        logging.warning(f"Failed to find config file in {os.listdir()}")
+        with open("/etl/config.json", "r") as file:
+            configs = json.load(file)
     stocks = configs["symbols"]
-    dwnloader = Downloader(stocks, configs["per"])
+
+    isDailyUpdate = configs['isDailyUpdate']
+
+    if isDailyUpdate:
+        per = '1d'
+        tz = timezone('EST')
+        n = datetime.now(tz)
+        fromDate = n.strftime("%Y-%m-%d")
+    else:
+        per = configs["per"]
+        fromDate = configs["fromDate"]
+
+    etl_Logger.info(f"Per : {per}, fromDate : {fromDate}")
+
+    dwnloader = Downloader(stocks, per)
     dwnloader.download_files()
-    dw = DataWriter(stocks, dwnloader.get__filepath(), configs["fromDate"])
+    path = dwnloader.get__filepath()
+    dw = DataWriter(stocks, path, fromDate)
     dw.run()
